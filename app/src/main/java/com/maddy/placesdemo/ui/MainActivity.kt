@@ -13,6 +13,7 @@ import com.maddy.placesdemo.adapter.PlacesListAdapter
 import com.maddy.placesdemo.databinding.ActivityMainBinding
 import com.maddy.placesdemo.model.PlacesData
 import com.maddy.placesdemo.viewmodel.PlacesViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.ArrayList
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -20,6 +21,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private val handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable? = null
     lateinit var placeViewModel: PlacesViewModel
+    var city: String = ""
+    var address: String = ""
 
     override val layoutResourceId: Int
         get() = com.maddy.placesdemo.R.layout.activity_main
@@ -31,6 +34,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         setToolbarText("Places Search")
         placeViewModel = ViewModelProviders.of(this).get(PlacesViewModel::class.java)
         hideBack()
+        city = et_place.text.toString().trim()
 
         binding.etPlace.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -40,8 +44,25 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                city = s.toString()
                 handler.removeCallbacks(runnable)
-                runnable = Runnable { getPlacesApi(s.toString(), "Gurgaon") }
+                runnable = Runnable { getPlacesApi(address, city) }
+                handler.postDelayed(runnable, 500)
+            }
+        })
+
+
+        binding.etAddress.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                address = s.toString()
+                handler.removeCallbacks(runnable)
+                runnable = Runnable { getPlacesApi(address, city) }
                 handler.postDelayed(runnable, 500)
             }
         })

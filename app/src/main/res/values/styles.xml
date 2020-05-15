@@ -14,10 +14,10 @@
         <item name="boxBackgroundColor">@color/colorPrimary</item>
         <item name="boxStrokeColor">@color/grey</item>
         <item name="boxStrokeWidth">1dp</item>
-        <item name="boxCornerRadiusBottomEnd">10dp</item>
-        <item name="boxCornerRadiusBottomStart">10dp</item>
-        <item name="boxCornerRadiusTopEnd">10dp</item>
-        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusTopStart">16dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/colorPrimary</item>
