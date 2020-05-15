@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.EditText
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -31,41 +32,31 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         super.onCreate(savedInstanceState)
         hideProgress()
         showData()
-        setToolbarText("Places Search")
-        placeViewModel = ViewModelProviders.of(this).get(PlacesViewModel::class.java)
         hideBack()
+        setToolbarText("Places Search")
+        initViewModel()
+        textchangeListeners()
+    }
+
+    private fun initViewModel() {
+        placeViewModel = ViewModelProviders.of(this).get(PlacesViewModel::class.java)
+    }
+
+    private fun textchangeListeners() {
         city = et_place.text.toString().trim()
+        binding.etPlace.onChange {
+            city = it
+            handler.removeCallbacks(runnable)
+            runnable = Runnable { getPlacesApi(address, city) }
+            handler.postDelayed(runnable, 500)
+        }
 
-        binding.etPlace.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                city = s.toString()
-                handler.removeCallbacks(runnable)
-                runnable = Runnable { getPlacesApi(address, city) }
-                handler.postDelayed(runnable, 500)
-            }
-        })
-
-
-        binding.etAddress.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                address = s.toString()
-                handler.removeCallbacks(runnable)
-                runnable = Runnable { getPlacesApi(address, city) }
-                handler.postDelayed(runnable, 500)
-            }
-        })
+        binding.etAddress.onChange {
+            address = it
+            handler.removeCallbacks(runnable)
+            runnable = Runnable { getPlacesApi(address, city) }
+            handler.postDelayed(runnable, 500)
+        }
     }
 
     private fun getPlacesApi(query: String, city: String) {
@@ -92,6 +83,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 )
             )
         }
+    }
+
+    fun EditText.onChange(cb: (String) -> Unit) {
+        this.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {cb(s.toString())}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
 }
